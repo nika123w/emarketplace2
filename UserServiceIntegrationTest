@@ -1,0 +1,24 @@
+@SpringBootTest
+public class UserServiceIntegrationTest {
+
+    @MockBean
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    public void testRegisterIntegration() {
+        UserRegisterDto dto = new UserRegisterDto();
+        dto.setUsername("IntegrationUser");
+        dto.setEmail("integration@example.com");
+        dto.setPassword("password");
+        dto.setBirthday(LocalDate.of(2000, 1, 1));
+
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        userService.register(dto);
+
+        verify(userRepository).save(any(User.class));
+    }
+}
